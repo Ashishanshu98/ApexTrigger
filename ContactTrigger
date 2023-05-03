@@ -1,0 +1,17 @@
+trigger ContactTrigger on Contact (before insert, before update) {
+    
+    if(Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate))
+    {
+        for ( Contact con : Trigger.New)
+        {
+           integer  duplicateCount = [Select count() from Contact
+                                                                 Where LastName =: con.LastName and
+                                                                       FirstName =:con.FirstName and
+                                                                       Phone =: con.Phone];
+             if(duplicateCount > 0)
+             {
+                 con.AddError('Please make sure that you are entering Unique record');
+             }
+        }    
+    }
+}
