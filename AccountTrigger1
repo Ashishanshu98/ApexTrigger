@@ -1,0 +1,16 @@
+// Trigger on Account object to prevent from delete if Account.Field has yes value.//
+
+trigger AccountsTrigger on Account (before delete) {
+        
+    if(Trigger.isBefore && Trigger.isDelete)
+     {
+        for (Account acco : Trigger.Old)
+        {
+            if (acco.Active__c == 'Yes')
+            {
+                acco.AddError ('You can not delete this account as its status is Active');
+            }
+        }
+
+   }
+}
