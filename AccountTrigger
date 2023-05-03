@@ -1,0 +1,23 @@
+// Trigger on Account object to make Industry, Fax and Website field required. //
+
+trigger AccountsTrigger on Account (before insert, before update) {
+    
+    if((Trigger.isBefore) && (Trigger.isInsert || Trigger.isUpdate) )
+    {
+        for (Account acc : Trigger.New)
+        {
+            if(acc.Industry == '' || acc.Industry == null)
+            {
+                acc.Industry.AddError('Please Enter Industry Value');
+            }
+            else if(acc.Fax == '' || acc.Fax == null)
+            {
+                acc.Fax.AddError('Please Enter Fax Value');
+            }
+            else if(acc.Website == '' || acc.Website == null)
+            {
+                acc.Website.AddError('Please Enter Website Value');
+            }
+        }
+    }
+ }
