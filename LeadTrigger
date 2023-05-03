@@ -1,0 +1,22 @@
+// Trigger on Lead to update AnnualRevenue field after choosing Industry //  
+
+trigger LeadsTrigger on Lead (before insert, before update) {
+   
+    if((Trigger.isBefore) && (Trigger.isInsert || Trigger.isUpdate) )
+    {
+        for (Lead id : Trigger.New)
+        {
+            if(id.Industry == 'Agriculture')
+            {
+                id.AnnualRevenue = 900000;
+                system.debug('As you choose Industry as Agricultture, Annual Revenue is auto updated as 900000');
+            }
+            else if (id.Industry == 'Banking')
+            {
+                id.AnnualRevenue = 800000; 
+                system.debug('As you choose Industry as Banking, Annual Revenue is auto updated as 800000');
+            
+            }
+        }
+    }
+}
