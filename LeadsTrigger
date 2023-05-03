@@ -17,5 +17,4 @@ trigger LeadsTrigger on Lead (before insert, before update) {
             }
         }
     }
-
 }
