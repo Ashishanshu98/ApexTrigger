@@ -1,0 +1,15 @@
+// Trigger on Contact to make Account Name (Lookup) Field required. //
+
+trigger ContactTrigger1 on Contact (before insert) {
+    
+    if(Trigger.isBefore && Trigger.isInsert)
+    {
+        for(Contact cont : Trigger.New)
+        {
+           if(cont.AccountId == null)
+            {
+                cont.AccountId.AddError('Please choose Account Name in order to create Contact Record');
+            }
+      }
+   }
+}
