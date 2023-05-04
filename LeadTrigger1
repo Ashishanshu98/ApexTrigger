@@ -1,0 +1,34 @@
+//  Trigger on Lead to make Address field required. //
+
+trigger LeadTrigger on Lead (before insert) {
+    
+    if(Trigger.isBefore && Trigger.isInsert)
+        
+        for (Lead ld : Trigger.New)
+    {
+        if (ld.Street == '' || ld.Street == null) 
+        {
+            ld.Street.AddError('Please enter Street Name');
+        }
+        
+         if (ld.City == '' || ld.City == null)
+        {
+            ld.city.AddError('Please enter City Name');
+        }
+        
+        if (ld.PostalCode == '' || ld.PostalCode == null)
+        {
+            ld.PostalCode.AddError('Please enter Postal Code');
+        }
+        
+        if (ld.State == '' || ld.State == null)
+        {
+            ld.State.AddError('Please enter State Name');
+        }
+        
+        if (ld.Country == '' || ld.Country == null)
+        {
+            ld.Country.AddError('Please enter Country Name');
+        }
+    }
+}
