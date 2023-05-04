@@ -1,0 +1,17 @@
+// Trigger on Account to delete account not related contact. //  
+
+trigger AccountTrigger1 on Account (before delete) {
+    
+    if(Trigger.isBefore && Trigger.isDelete)
+    {
+        for (Account act : Trigger.Old)
+        {
+            List <Contact> allRelatedContacts = [SELECT Id, AccountId FROM Contact WHERE AccountId IN :Trigger.Old];
+            for( Contact con : allRelatedContacts)
+            {
+                con.AccountId = null;
+            }
+            update allRelatedContacts;
+        }       
+    }
+}
