@@ -1,0 +1,20 @@
+// Trigger on Case to make AccountName(Lookup)  and ContactName(Lookup) mandatory. //
+
+trigger CaseTrigger on Case (before insert, before update) {
+    
+    if(Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate))
+    {
+        for(Case cs : Trigger.New)
+        {
+             if(cs.ContactId == null)
+            {
+                cs.ContactId.AddError('Please choose related Contact in order to create Case record.');
+            }
+           
+            else if ( cs.AccountId == null)
+            {
+                cs.AccountId.AddError('Please choose related account in order to create Case record.');
+            }           
+        }
+    }
+}
