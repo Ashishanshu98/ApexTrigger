@@ -1,0 +1,19 @@
+// Trigger on Position__c object to make Minimum_Pay__c & Phone_Number__c field required. // 
+
+trigger PositionTrigger on Position__c (before insert, before update) {
+    
+    if(Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)){
+        
+        for (Position__c pos : Trigger.New){
+            
+            if (pos.Minimum_Pay__c == null){
+                
+                pos.Minimum_Pay__c.AddError('Please enter Minimum Pay amount.');
+            }
+            if (pos.Phone_Number__c == null || pos.Phone_Number__c == '')
+            {
+                 pos.Phone_Number__c.AddError('Please enter Phone Number.');
+            }
+        }
+    }
+ }
