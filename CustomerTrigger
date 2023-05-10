@@ -1,0 +1,43 @@
+// Trigger in Custom Object(Customer) to reflect Region Manager Name using Custom Setting 
+
+trigger CustomerTrigger on Customer__c (before insert, before update) 
+{
+    if(Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate))
+    {
+        for(Customer__c cust : Trigger.New)
+        {
+            /*if (cust.Region__c == 'Africa')
+            {
+              cust.Region_Manager_Name__c = 'Afica RM'; 
+            }
+            
+            else if (cust.Region__c == 'Asia')
+            {
+              cust.Region_Manager_Name__c = 'Asia RM';
+            }
+            
+            else if (cust.Region__c == 'Australia/Oceania')
+            {
+              cust.Region_Manager_Name__c = 'Australia/Oceania RM'; 
+            }
+            
+             else if (cust.Region__c == 'Europe')
+            {
+              cust.Region_Manager_Name__c = 'Europe RM';
+            }
+            
+              else if (cust.Region__c == 'Antarctica')
+            {
+              cust.Region_Manager_Name__c = 'Antarctica RM';
+            }
+            
+              else if (cust.Region__c == 'North America' || cust.Region__c == 'South America')
+            {
+              cust.Region_Manager_Name__c = 'America RM';
+            }
+*/
+            
+            cust.Region_Manager_Name__c = RegionDetails__c.GetValues(cust.Region__c).Region_Manager_Name__c;  
+        }
+    }
+}
