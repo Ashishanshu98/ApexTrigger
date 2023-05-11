@@ -1,0 +1,21 @@
+//Bulk Lead Conversion Using Triiger.//
+
+trigger LeadTrigger3 on Lead (before insert, before update)
+ {    
+   LeadStatus lstatus = [Select Id,MasterLabel,IsConverted from LeadStatus where isConverted = true];
+     
+   if(Trigger.isInsert && Trigger.isUpdate)
+   {
+       for(Lead ldrecord : Trigger.New)
+       {
+           if(ldrecord.Status == 'Closed - Converted' && ldrecord.IsConverted == false)
+           {
+               Database.LeadConvert lconvert = new Database.LeadConvert();
+               lconvert.setLeadId(ldRecord.Id);
+               lconvert.setDoNotCreateOpportunity(False);
+               lconvert.setSendNotificationEmail(True);
+               lconvert.setConvertedStatus(lstatus.MasterLabel);
+           }
+     }
+   } 
+ }
