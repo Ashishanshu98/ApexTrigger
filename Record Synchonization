@@ -15,8 +15,27 @@ trigger RecordSynchonization on Hiring_Manager__c (after insert, after update)
     if(Trigger.isAfter && Trigger.isUpdate)
     {          
         HiringManagerRecordSynchonizationHandler.AfterUpdate(Trigger.NewMap);
+        
+        
+        //In Case we want any Record Synchonization on any specific Field Change or Crietria Based //
+        
+        /* Map <ID, Hiring_Manager__C> hrRecordsUpdated = new Map<ID, Hiring_Manager__C>();
+        
+        for(Hiring_Manager__c hr : Trigger.New)
+        {
+            if ((Trigger.OldMap.Get(hr.Id).Name != hr.name ) ||
+                (Trigger.OldMap.Get(hr.Id).Location__c != hr.Location__c ) ||
+                (Trigger.OldMap.Get(hr.Id).Contact_Number__c != hr.Contact_Number__c ) ||
+                (Trigger.OldMap.Get(hr.Id).Email_ID__c != hr.Email_ID__c ) )
+            {
+                hrRecordsUpdated.Put(hr.Id, hr);
+            }
+        }
+        if(!hrRecordsUpdated.isEmpty())
+        {
+            HiringManagerRecordSynchonizationHandler.AfterUpdate(hrRecordsUpdated);
+        }*/
     }
-
 }
 
 
