@@ -1,0 +1,79 @@
+// Changes in any field of Object_1(Hiring_Manager__c // Parent) will reflect automatically in Object_2 (Recruiters // Child) // 
+
+
+//Trigger Class //
+
+trigger RecordSynchonization on Hiring_Manager__c (after insert, after update) 
+ {
+    
+    if(Trigger.isAfter && Trigger.isInsert)
+    {
+        
+        HiringManagerRecordSynchonizationHandler.AfterInsert(Trigger.New);
+    }
+     
+    if(Trigger.isAfter && Trigger.isUpdate)
+    {          
+        HiringManagerRecordSynchonizationHandler.AfterUpdate(Trigger.NewMap);
+    }
+
+}
+
+
+// TriggerHandlerClass // 
+
+public class HiringManagerRecordSynchonizationHandler 
+{
+    public static void AfterInsert(List<Hiring_Manager__C> lstHRRecords)
+    {
+        if(!lstHRRecords.isEmpty())
+        {
+            List<Recruiter__C> lstRecrutiers = new List<Recruiter__C>();
+            for(Hiring_Manager__C hr : lstHRRecords)
+            {
+                //Create a Recuriter record.
+                Recruiter__C rec = new Recruiter__C();
+                rec.Name = hr.Name;
+                rec.Email_Address__c = hr.Email_ID__c;
+                rec.Locations__c = hr.Location__c;
+                rec.Contact_Number__c = hr.Contact_Number__c;
+                rec.HiringManager__c = hr.Id;
+                //Add this record to Collection.
+                lstRecrutiers.Add(rec);              
+            }
+            //Insert the record.
+            if(!lstRecrutiers.isEmpty())
+            {
+                insert lstRecrutiers;
+            }
+        }
+    }
+    
+    public static void AfterUpdate(Map<ID, Hiring_Manager__C> mapHRRecords)
+    {
+        List <Recruiter__c> lstRecruiters = [select ID, Name, Locations__c, Email_Address__c, Contact_Number__c,HiringManager__c
+                                                    from Recruiter__c where HiringManager__c IN : mapHRRecords.KeySet()];
+         if(! lstRecruiters.isEmpty())
+        { 
+            List <Recruiter__c> recruiterToUpdate = new List <Recruiter__c>();
+            
+            for(Recruiter__c rec : lstRecruiters)
+            {
+                Hiring_Manager__C hr = mapHRRecords.Get(rec.HiringManager__c);
+                rec.Name = hr.Name;
+                rec.Locations__c = hr.Location__c;
+                rec.Email_Address__c= hr.Email_ID__c;
+                rec.Contact_Number__c = hr.Contact_Number__c;
+                
+                
+                recruiterToUpdate.add(rec);
+            }
+            
+            if(!recruiterToUpdate.isEmpty())
+            {
+                update recruiterToUpdate; 
+            }
+        }
+    }
+
+}
