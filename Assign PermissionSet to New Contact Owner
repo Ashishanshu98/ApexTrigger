@@ -1,0 +1,43 @@
+// Class 
+public class ContactOwnerChangeHandler {
+	public static void handleOwnerChange(Map<Id, Contact> oldContactsByIds, Map<Id, Contact> newContactsByIds) {
+  if (oldContactsByIds == null || newContactsByIds == null) 
+  {
+			return;
+	}
+  Set<Id> newOwnersIds = new Set<Id>();
+	for (Contact newContact : newContactsByIds.values()) {
+			Contact oldContact = oldContactsByIds.get(newContact.Id);
+			if (newContact.OwnerId != oldContact.OwnerId) {
+				newOwnersIds.add(newContact.OwnerId);
+			}
+		}
+		assignPermissionSet(newOwnersIds, 'Knowledge_LSF_Permission_Set');
+	}
+	@Future
+	private static void assignPermissionSet(Set<Id> usersIds, String permissionSetName) {
+		if (usersIds.isEmpty() || String.isBlank(permissionSetName)) {
+			return;
+		}
+		List<PermissionSet> permissionSets = [SELECT Id FROM PermissionSet WHERE Name = :permissionSetName];
+		if (permissionSets.isEmpty()) {
+			return;
+		}
+		List<PermissionSetAssignment> permissionSetAssignments = new List<PermissionSetAssignment>();
+		for (Id userId : usersIds) {
+			permissionSetAssignments.add(
+					new PermissionSetAssignment(PermissionSetId = permissionSets[0].Id, AssigneeId = userId)
+			);
+		}
+		insert permissionSetAssignments;
+	}
+}
+
+// Trigger
+trigger ContactOwnerChangeTrigger on Contact (after update) 
+{
+    Map<Id, Contact> oldContactsByIds = new Map<Id, Contact>(Trigger.old);
+    Map<Id, Contact> newContactsByIds = new Map<Id, Contact>(Trigger.new);
+    
+    ContactOwnerChangeHandler.handleOwnerChange(oldContactsByIds, newContactsByIds);
+}
